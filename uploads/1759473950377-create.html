@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Create</title>
+        <style>
+            body{
+                background:linear-gradient(to left,rgba(28, 25, 25, 0.3),rgba(244, 9, 9, 0.542));
+            }
+            h1{
+                text-align: center;
+                color: white;
+                align-items: center;
+            }
+            .container{
+                background-color:rgba(141, 58, 58, 0.3);
+                box-sizing: border-box;
+                padding:40px 40px;
+                align-items: center;
+            }
+            input::placeholder{
+                color: black;
+                opacity: 1;
+            }
+            input[type=text]{
+                width:100%;
+                margin-top:20px;
+                align-items: center;
+                height: 50px;
+                background-color:rgba(147, 50, 50, 0.3);
+                color:black;
+                border-left-color: rgba(141, 58, 58, 0.3);
+                border-right-color: rgba(141, 58, 58, 0.3);
+                border-top-color: rgba(141, 58, 58, 0.3);
+                border-bottom: 2px solid black;
+            }
+            #priority{
+                width:100%;
+                margin-top:20px;
+                align-items: center;
+                height: 50px;
+                background-color:rgba(147, 50, 50, 0.3);
+                border-left-color: rgba(141, 58, 58, 0.3);
+                border-right-color: rgba(141, 58, 58, 0.3);
+                border-top-color: rgba(141, 58, 58, 0.3);
+                border-bottom: 2px solid black;
+            }
+            input[type=date]{
+                width:100%;
+                margin-top:20px;
+                align-items: center;
+                height: 50px;
+                background-color:rgba(147, 50, 50, 0.3);
+                border-left-color: rgba(141, 58, 58, 0.3);
+                border-right-color: rgba(141, 58, 58, 0.3);
+                border-top-color: rgba(141, 58, 58, 0.3);
+                border-bottom: 2px solid black;
+            }
+            input[type=submit]{
+                margin-top: 20px;
+                margin-left:450px;
+                border: 2px solid black;
+                background: rgb(216, 32, 81);
+                height: 40px;
+                width:25%;
+            }
+            #message{
+                text-align: center;
+                font-size: x-large;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1> Welcome to GROWTH </h1>
+            <form onsubmit="addtask(event)">
+                <input type="text"  placeholder="Enter a task to be completed" id="task">
+                <select id="priority">
+                    <option value="">Select a priority for the task</option>
+                    <option value="Low">Low</option>
+                    <option value="Midium">Midium</option>
+                    <option value="High">High</option>
+                </select>
+                <input type="date" id="duedate">
+                <input type="submit" id="add" value="Add Task">
+            </form>
+        </div>
+        <div>
+            <p id="message"></p>
+        </div>
+        <div>
+            <ul id="tasklist"></ul>
+        </div>
+        <script>
+            function addtask(event){
+                event.preventDefault();
+            let task=document.getElementById("task").value.trim();
+            let priority=document.getElementById("priority").value;
+            let date=document.getElementById("duedate").value;
+            let today=new Date();    //Not done
+            
+            var message="";
+                if(task===""|| priority===""||date===""){
+                    message="Please fill in all the details of task";
+                    document.getElementById("message").style.color="red";
+                    document.getElementById("message").innerText=message;
+                    return;
+                }
+                message="Task addedd\n"+task+" [Priority:"+priority+",Due:"+date+"]";
+                document.getElementById("message").style.color="lightgreen";
+                document.getElementById("message").innerText=message;
+
+                let li=documnet.createElement("li");
+                li.innerHTML=`
+                ${task} <small>[${priority}] Due: ${date}</small>
+                <button onclick="completeTask(this)">/</button>
+                <button onclick="deleteTask(this)">*</button>
+                `;
+                document.getElementById("tasklist").appendChild(li);
+
+                document.getElementById("task").value="";
+                document.getElementById("priority").value="";
+                document.getElementById("date").value="";            
+            }
+            function completeTask(button){
+                let li=button.parentElement;
+                li.style.textDecoration="line-through";
+                li.style.color="gray";
+            }
+            function deleteTask(button){
+                let li=button.parentElement;
+                li.remove();
+            }
+        </script>
+    </body>
+</html>

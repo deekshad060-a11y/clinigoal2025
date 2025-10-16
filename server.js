@@ -1,17 +1,32 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const path = require("path");
+const cors = require("cors");
 const app = express();
 const authMiddleware = require("./middleware/auth");
 
-// Middleware
-app.use(cors());
+// ------------------- CORS -------------------
+// Allow frontend origin
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Optional: handle OPTIONS preflight for all requests
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// ------------------- Middleware -------------------
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// MongoDB connection
+// ------------------- MongoDB -------------------
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,28 +34,23 @@ mongoose.connect(process.env.MONGO_URL, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Routes
+// ------------------- Routes -------------------
 app.use("/auth", require("./routes/userRoutes"));
 app.use("/courses", require("./routes/courseRoutes"));
 app.use("/assignments", require("./routes/assignmentRoutes"));
 app.use("/quizzes", require("./routes/quizRoutes"));
 app.use("/progress", require("./routes/progressroutes"));
-
-const dashboardRoutes = require("./routes/dashboardRoutes");
-app.use("/api/dashboard", dashboardRoutes);
-
-const feedbackRoutes = require("./routes/feedbackRoutes");
-app.use("/api/feedback", feedbackRoutes);
-
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/feedback", require("./routes/feedbackRoutes"));
 app.use("/", require("./routes/certificateRoutes"));
+app.use("/api/certificates", require("./routes/certificates.js"));
+app.use("/enrollments", require("./routes/enrollment"));
 
-const certificateRoutes = require("./routes/certificates.js");
-app.use("/api/certificates", certificateRoutes);
+// ------------------- Root -------------------
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully!");
+});
 
-// FIXED: Enrollment routes - use consistent path
-const enrollmentRoutes = require("./routes/enrollment");
-app.use("/enrollments", enrollmentRoutes); // Changed from "/api" to "/api/enrollments"
-
-// Start server
+// ------------------- Start Server -------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

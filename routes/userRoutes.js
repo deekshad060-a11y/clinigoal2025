@@ -91,6 +91,17 @@ router.get("/students", async (req, res) => {
 
 
 
+// Get all admins
+router.get("/admins", async (req, res) => {
+  try {
+    const admins = await User.find({ role: "admin" }).select("name email");
+    res.json(admins);
+  } catch (err) {
+    console.error("Error fetching admins:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 // Get user-specific stats
 router.get("/dashboard-stats/:userId", authMiddleware(), async (req, res) => {

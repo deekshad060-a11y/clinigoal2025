@@ -14,7 +14,7 @@ module.exports = (roles = []) => {
       if (!user) return res.status(401).json({ message: 'Invalid user' });
 
       if (roles.length && !roles.includes(user.role)) {
-        return res.status(403).json({ message: 'Access denied' });
+        return res.status(403).json({ message: 'Access denied' });c
       }
 
       req.user = user; // attach user to request

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Enrollment = require('../model/Enrollment');
-const Course = require('../model/Course');
+const Course = require('../model/course');
 const User = require('../model/user');
 const authMiddleware = require('../middleware/auth'); // ADD THIS
 

@@ -7,22 +7,12 @@ const app = express();
 const authMiddleware = require("./middleware/auth");
 
 // ------------------- CORS -------------------
-// Allow frontend origin
-app.use(cors());
-
-// Or specific origins
 app.use(cors({
   origin: ['https://clinigoal.vercel.app', 'http://localhost:3000'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Optional: handle OPTIONS preflight for all requests
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
 
 // ------------------- Middleware -------------------
 app.use(express.json());
@@ -30,11 +20,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ------------------- MongoDB -------------------
 mongoose.connect(process.env.MONGO_URL)
-.then(() => console.log("✅ MongoDB connected"))
-.catch(err => {
-  console.error("❌ MongoDB connection error:", err);
-  process.exit(1);
-});
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
 
 // ------------------- Routes -------------------
 app.use("/auth", require("./routes/userRoutes"));

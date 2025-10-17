@@ -7,6 +7,8 @@ const app = express();
 const authMiddleware = require("./middleware/auth");
 
 // ------------------- CORS -------------------
+// Allow frontend origin
+app.use(cors());
 
 // Or specific origins
 app.use(cors({

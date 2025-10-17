@@ -8,10 +8,12 @@ const authMiddleware = require("./middleware/auth");
 
 // ------------------- CORS -------------------
 // Allow frontend origin
+app.use(cors());
+
+// Or specific origins
 app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  origin: ['https://clinigoal.vercel.app', 'http://localhost:3000'],
+  credentials: true
 }));
 
 // Optional: handle OPTIONS preflight for all requests

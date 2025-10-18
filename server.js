@@ -37,6 +37,8 @@ app.use("/api/feedback", require("./routes/feedbackRoutes"));
 app.use("/", require("./routes/certificateRoutes"));
 app.use("/api/certificates", require("./routes/certificates.js"));
 app.use("/enrollments", require("./routes/enrollment"));
+app.use("/api/newsletter", require("./routes/newsletterRoutes"));
+
 
 // ------------------- Root -------------------
 app.get("/", (req, res) => {

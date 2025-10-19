@@ -51,11 +51,15 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+// ✅ Update last login timestamp
+user.lastLogin = new Date();
+await user.save();
+
+const token = jwt.sign(
+  { userId: user._id, role: user.role },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
 
     res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
@@ -121,7 +125,9 @@ exports.resetPassword = async (req, res) => {
 // ----------------- GET ALL STUDENTS -----------------
 exports.getAllStudents = async (req, res) => {
   try {
-    const students = await User.find({ role: "student" }).select("name email avatar enrolledCourses");
+    const students = await User.find({ role: "student" })
+      .select("name email avatar enrolledCourses lastLogin createdAt") // ✅ ADD lastLogin here
+      .sort({ lastLogin: -1 });
     res.json(students);
   } catch (err) {
     res.status(500).json({ message: "Error fetching students", error: err.message });
@@ -158,13 +164,13 @@ exports.getMe = async (req, res) => {
       role: user.role,
       avatar: user.avatar || null,
       enrolledCourses: user.enrolledCourses || [],
+      lastLogin: user.lastLogin, // ✅ ADD this line
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
-
 // ----------------- DASHBOARD STATS -----------------
 exports.getDashboardStats = async (req, res) => {
   try {

@@ -7,12 +7,15 @@ const Quiz = require("../model/Quiz");
 
 // ---------- Nodemailer Transporter ----------
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: false, // false for port 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 });
+
 
 // ----------------- SIGNUP -----------------
 exports.signup = async (req, res) => {
